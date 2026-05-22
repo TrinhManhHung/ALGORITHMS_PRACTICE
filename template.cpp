@@ -196,13 +196,10 @@ ll powMod(ll a, ll b){
 }
 
 void prepare(){
-	pw[0] = 1;
-	FOR(i, 1, maxn) pw[i] = pw[i-1] * BASE % MOD;
-	
-	invPw[maxn] = powMod(pw[maxn], MOD-2);
-	FOR(i, 0, maxn){
-		invPw[i-1] = invPw[i] * BASE % MOD;
-	}
+    pw[0] = 1;
+    FOR(i, 1, maxn) pw[i] = pw[i-1] * BASE % MOD;
+    invPow[maxn] = powMod(pw[maxn], MOD-2);
+    FOD(i, maxn, 1) invPow[i-1] = invPow[i] * BASE % MOD;
 }
 
 ll calcHash(string s){
@@ -412,7 +409,7 @@ struct Matrix{
         memset(d, 0, sizeof(d));
     }
 
-    Matrix operator * (const Matrix o) const{
+    Matrix operator * (const Matrix &o) const{
         int x = n, y = m, z = o.m;
         Matrix res(x, z);
 
@@ -425,7 +422,7 @@ struct Matrix{
     }
 };
 
-Matrix powMod(Matrix o, ll p){
+Matrix powMod(Matrix &o, ll p){
     Matrix res(o.n, o.m);
     FOR(i, 0, o.n-1) res.d[i][i] = 1;
 
@@ -444,6 +441,41 @@ void listAllSubset(int mask){
 	for(int sub = mask; sub >= 0; sub--){
 		sub &= mask;
 	}
+}
+//Duyet Nhanh Cac Bit 1 Cua Mask
+void listBitOne(int mask){
+	for(ll m = mask; m > 0; m = m & (m-1)){
+		int b = __builtin_ctzll(m);
+	}
+//Trie
+const ll MOD = 1e9+7;
+const int N = 1e6+5;
+const int ALPHABET_SIZE = 26;
+ 
+struct Node{
+    int cntRev;
+    unordered_map<char, Node*> child;
+    Node(){
+        cntRev = 0;
+    }
+};
+ 
+Node nodes[N];
+int trieNodeCount;
+Node* root;
+ 
+Node* createNode(){
+    return &nodes[trieNodeCount++];
+}
+ 
+void addString(const string &s){
+    Node* p = root;
+ 
+    for(char c : s){
+        if(p->child.find(c-'a') == p->child.end()) p->child[c-'a'] = createNode();
+        p = p->child[c-'a'];
+        p->cntRev++;
+    }
 }
 
 int main(){
